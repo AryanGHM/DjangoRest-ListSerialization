@@ -9,8 +9,8 @@ This project is in very early stages, it is to be refactored and prettified as w
 - Node.js and npm installed
 
 **Steps:**
-1. Clone the repository, `git clone https://github.com/AryanGHM/z-lab-test`
-2. `cd z-lab-test`
+1. Clone the repository, `git clone https://github.com/AryanGHM/DjangoRest-ListSerialization`
+2. `cd DjangoRest-ListSerialization`
 3. (Skip if you already have virtualenv installed) `pip install virtualenv`
 4. `virtualenv venv`
 5. Activate virtual env:

@@ -1,9 +1,7 @@
-from ast import excepthandler
 from multiprocessing.sharedctypes import Value
 from django.shortcuts import render
 
 # Create your views here.
-from django.contrib.auth.models import User
 from django.http import Http404
 from django.core import serializers
 

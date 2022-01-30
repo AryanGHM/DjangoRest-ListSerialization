@@ -4,12 +4,17 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import Http404
 from django.core import serializers
+from django.contrib.auth.models import User
 
-from restapp.serializers import BookSerializer
+from restapp.serializers import BookSerializer, UserSerializer, BookListSerializer
 from restapp.models import Book
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+""" Generic Solution """
+
+
 
 class BookList(APIView):
     """ List all books or create new books """
@@ -53,6 +58,12 @@ class BookList(APIView):
     def post(self, request, format=None):
         serializer = BookSerializer(data=request.data, many=True)
         if serializer.is_valid():
+            ret = serializer.update()
+            return Response(ret, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BookSerializer(data=request.data, many=True)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -74,35 +85,12 @@ class BookList(APIView):
     #a new object will be created. If and id less object
     #cannot be serialized HTTP_400 is raised.
     def put(self, request):
-        _data = request.data
-        instances = []
-        try:
-            for book in _data:
-                if 'id' in book.keys():
-                    #update
-                    self.validate_ids([book['id']])
-                    instance = self.get_object(book['id'])
-                    self.update_object(instance, book)
-                    instance.save()
-                    instances.append(instance)
-                else:
-                    #create
-                    serializer = BookSerializer(data=book)
-                    if serializer.is_valid():
-                        instances.append(serializer.save())
-                    else:
-                        raise status.HTTP_400_BAD_REQUEST
-                
-            # @todo return created/updated objects in response
-            return Response(status=status.HTTP_201_CREATED)
-            # res_serializer = BookSerializer(data=instances, many=True)
-            # if res_serializer.is_valid():
-            #     res_serializer.save()
-            #     return Response(res_serializer.data, status=status.HTTP_201_CREATED)
-            # else:
-            #     return Response(data=res_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except(KeyError, Book.DoesNotExist):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
     
     # Accepts a single pk supplied in url for single
     #deletion, for bulk deletion accepts a list of 

@@ -1,12 +1,8 @@
+import datetime
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 from restapp.models import Book
 from rest_framework import serializers
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = User
-        fields = ['url', 'username', 'email', 'is_staff']
-
 
 class BookListSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
@@ -22,7 +18,7 @@ class BookListSerializer(serializers.ListSerializer):
 
     def update(self):
         instance = Book.objects.all()
-        book_mapping = {book.id: book for book in instance} #database queryset
+        book_mapping = {book.id: book for book in instance} #model database queryset
         data_mapping = {item['id']: item for item in self.validated_data} #data queryset
 
         ret = []
@@ -56,6 +52,11 @@ class BookSerializer(serializers.ModelSerializer):
             'slug': {'validators': []},
         }
     
+    def validate(self, attrs):
+        if attrs['publish_date'] > datetime.date.today():
+            raise ValidationError({"publish_date": ["Publish date cannot later than today!"]})
+        return super().validate(attrs)
+
     @classmethod
     def many_init(cls, *args, **kwargs):
         kwargs['child'] = cls()

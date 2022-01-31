@@ -26,5 +26,5 @@ admin.autodiscover()
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^books/', views.BookList.as_view()),
+    re_path(r'^books/', views.BookListGeneric.as_view()),
 ]

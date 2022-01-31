@@ -1,5 +1,3 @@
-import uuid
-
 from django.contrib.auth.models import User
 from restapp.models import Book
 from rest_framework import serializers
@@ -12,19 +10,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 class BookListSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
+        inc = 1
         for item in data:
             if 'id' in item.keys():
                 continue
             else: 
-                item['id'] = uuid.uuid4()
+                item['id'] = (Book.objects.last().id+inc)
+                inc += 1
         
-        print("to internal value: ", data)
         return super().to_internal_value(data)
 
     def update(self):
         instance = Book.objects.all()
         book_mapping = {book.id: book for book in instance} #database queryset
-        print("validated data: ", self.validated_data)
         data_mapping = {item['id']: item for item in self.validated_data} #data queryset
 
         ret = []

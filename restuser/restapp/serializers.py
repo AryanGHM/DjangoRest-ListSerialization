@@ -37,11 +37,6 @@ class BookListSerializer(serializers.ListSerializer):
         
         return ret
 
-"""
-@issue: while updating in list serializer field validator
-raises an exception saying object with the same id already 
-exists. maybe being a model serilizer causes this?
-"""
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book

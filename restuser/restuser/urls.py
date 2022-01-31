@@ -14,18 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.db import router
 from django.urls import path
 
 from django.urls import include, re_path
 from django.contrib import admin
-
 from restapp import views
 
 admin.autodiscover()
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^books/', views.BookList.as_view()),
+    re_path(r'^books/', views.BookListGeneric.as_view()),
 ]
